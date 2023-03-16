@@ -1,17 +1,9 @@
 import { createContext, ReactNode, useReducer, useState } from 'react';
+import { ActionTypes, Cycle, cyclesReducer } from '../reducers/cycles';
 
 interface CreateCycleData {
   task: string;
   minutesAmmount: number;
-}
-
-interface Cycle {
-  id: string;
-  task: string;
-  minutesAmmount: number;
-  startDate: Date;
-  interruptedDate?: Date;
-  finishedDate?: Date;
 }
 
 interface CyclesContextType {
@@ -31,50 +23,11 @@ interface CyclesProviderType {
   children: ReactNode;
 }
 
-interface CyclesState {
-  cycles: Cycle[];
-  activeCycleId: string | null;
-}
-
 export function CyclesContextProvider({ children }: CyclesProviderType) {
-  const [cyclesState, dispatch] = useReducer(
-    (state: CyclesState, action: any) => {
-      switch (action.type) {
-        case 'ADD_NEW_CYCLE':
-          return {
-            ...state,
-            cycles: [...state.cycles, action.payload.newCycle],
-            activeCycleId: action.payload.newCycle.id,
-          };
-        case 'INTERRUPT_ACTIVE_CYCLE':
-          return {
-            ...state,
-            cycles: state.cycles.map((cycle) => {
-              return cycle.id === state.activeCycleId
-                ? { ...cycle, interruptedDate: new Date() }
-                : cycle;
-            }),
-            activeCycleId: null,
-          };
-        case 'FINISH_ACTIVE_CYCLE':
-          return {
-            ...state,
-            cycles: state.cycles.map((cycle) => {
-              return cycle.id === state.activeCycleId
-                ? { ...cycle, finishedDate: new Date() }
-                : cycle;
-            }),
-            activeCycleId: null,
-          };
-        default:
-          return state;
-      }
-    },
-    {
-      cycles: [],
-      activeCycleId: null,
-    }
-  );
+  const [cyclesState, dispatch] = useReducer(cyclesReducer, {
+    cycles: [],
+    activeCycleId: null,
+  });
   const [ammountSecondsPassed, setAmmountSecondsPassed] = useState<number>(0);
 
   const { cycles, activeCycleId } = cyclesState;
@@ -93,7 +46,7 @@ export function CyclesContextProvider({ children }: CyclesProviderType) {
     };
 
     dispatch({
-      type: 'ADD_NEW_CYCLE',
+      type: ActionTypes.ADD_NEW_CYCLE,
       payload: {
         newCycle,
       },
@@ -103,7 +56,7 @@ export function CyclesContextProvider({ children }: CyclesProviderType) {
 
   function interruptActiveCycle() {
     dispatch({
-      type: 'INTERRUPT_ACTIVE_CYCLE',
+      type: ActionTypes.INTERRUPT_ACTIVE_CYCLE,
       payload: {
         activeCycleId,
       },
@@ -112,7 +65,7 @@ export function CyclesContextProvider({ children }: CyclesProviderType) {
 
   function finishActiveCycle() {
     dispatch({
-      type: 'FINISH_ACTIVE_CYCLE',
+      type: ActionTypes.FINISH_ACTIVE_CYCLE,
       payload: {
         activeCycleId,
       },
