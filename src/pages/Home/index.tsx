@@ -32,6 +32,7 @@ interface Cycle {
   minutesAmmount: number;
   startDate: Date;
   interruptedDate?: Date;
+  finishedDate?: Date;
 }
 
 export function Home() {
@@ -49,20 +50,44 @@ export function Home() {
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId);
 
+  const totalSeconds = activeCycle ? activeCycle.minutesAmmount * 60 : 0;
+  const currentSeconds = activeCycle ? totalSeconds - ammountSecondsPassed : 0;
+
+  const minutesAmmount = Math.floor(currentSeconds / 60);
+  const secondsAmmount = currentSeconds % 60;
+
+  const minutes = String(minutesAmmount).padStart(2, '0');
+  const seconds = String(secondsAmmount).padStart(2, '0');
+
   useEffect(() => {
     let interval: number;
     if (activeCycle) {
       interval = setInterval(() => {
-        setAmmountSecondsPassed(
-          differenceInSeconds(new Date(), activeCycle.startDate)
+        const secondsDifference = differenceInSeconds(
+          new Date(),
+          activeCycle.startDate
         );
+
+        if (secondsDifference >= totalSeconds) {
+          setCycles((cycles) =>
+            cycles.map((cycle) => {
+              return cycle.id === activeCycleId
+                ? { ...cycle, finishedDate: new Date() }
+                : cycle;
+            })
+          );
+          setAmmountSecondsPassed(totalSeconds);
+          clearInterval(interval);
+        } else {
+          setAmmountSecondsPassed(secondsDifference);
+        }
       }, 1000);
     }
 
     return () => {
       clearInterval(interval);
     };
-  }, [activeCycle]);
+  }, [activeCycle, totalSeconds, activeCycleId]);
 
   function handleCreateNewCycle(data: NewCycleFormProps) {
     const newCycle: Cycle = {
@@ -80,7 +105,7 @@ export function Home() {
   }
 
   function handleInterruptCycle() {
-    setCycles(
+    setCycles((cycles) =>
       cycles.map((cycle) => {
         return cycle.id === activeCycleId
           ? { ...cycle, interruptedDate: new Date() }
@@ -90,15 +115,6 @@ export function Home() {
 
     setActiveCycleId(null);
   }
-
-  const totalSeconds = activeCycle ? activeCycle.minutesAmmount * 60 : 0;
-  const currentSeconds = activeCycle ? totalSeconds - ammountSecondsPassed : 0;
-
-  const minutesAmmount = Math.floor(currentSeconds / 60);
-  const secondsAmmount = currentSeconds % 60;
-
-  const minutes = String(minutesAmmount).padStart(2, '0');
-  const seconds = String(secondsAmmount).padStart(2, '0');
 
   useEffect(() => {
     if (activeCycle) document.title = `${minutes}:${seconds}`;
