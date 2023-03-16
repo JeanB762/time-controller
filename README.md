@@ -8,10 +8,14 @@
   - npm instalado
 
 ## Instalação
-  - Clone este repositório: git clone https://github.com/JeanB762/time-controller.git  
-  - Navegue até o diretório raiz: cd time-controller    
-  - Instale as dependências: npm install  
-  - Inicie o servidor de desenvolvimento: npm run dev  
+  - Clone este repositório: 
+    #### `git clone https://github.com/JeanB762/time-controller.git`  
+  - Navegue até o diretório raiz:  
+    #### `cd time-controller`    
+  - Instale as dependências: 
+    #### `npm install`  
+  - Inicie o servidor de desenvolvimento: 
+    #### `npm run dev`  
   - A aplicação será executada na porta indicada no terminal.  
 
 ## Funcionalidades  
