@@ -8,7 +8,7 @@ export function Countdown() {
     activeCycle,
     activeCycleId,
     ammountSecondsPassed,
-    handleFinishActiveCycle,
+    finishActiveCycle,
     updateSecondsPassed,
   } = useContext(CyclesContext);
 
@@ -33,7 +33,7 @@ export function Countdown() {
         );
 
         if (secondsDifference >= totalSeconds) {
-          handleFinishActiveCycle();
+          finishActiveCycle();
           updateSecondsPassed(totalSeconds);
           clearInterval(interval);
         } else {
@@ -49,7 +49,7 @@ export function Countdown() {
     activeCycle,
     totalSeconds,
     activeCycleId,
-    handleFinishActiveCycle,
+    finishActiveCycle,
     updateSecondsPassed,
   ]);
 
