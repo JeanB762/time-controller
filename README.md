@@ -40,4 +40,4 @@
 - Status do ciclo (finalizado, interrompido ou em andamento)
 
 ## Armazenamento de dados
-  - Os ciclos passados são armazenados no armazenamento local do navegador (local storage [A implementar]). Quando um ciclo é finalizado ou interrompido, ele é adicionado à lista de ciclos passados.
+  - Os ciclos passados são armazenados no armazenamento local do navegador (localStorage). Quando um ciclo é finalizado ou interrompido, ele é adicionado à lista de ciclos passados.
